@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>AR Tracing Overlay</title>
 <style>
   :root { --accent:#7dd3fc; --panel:rgba(15,18,25,0.82); --line:rgba(255,255,255,0.12); }
   html, body { margin:0; height:100%; background:#000; overflow:hidden; overscroll-behavior:none; font-family:system-ui, sans-serif; }
@@ -58,7 +59,6 @@
     </div>
     <div class="row">
       <select id="cams"><option>Starting camera…</option></select>
-      <button id="switch" class="btn">Next camera</button>
     </div>
     <label class="slider">Opacity
       <input type="range" id="op" min="0" max="1" step="0.05" value="0.5">
@@ -107,45 +107,49 @@
   };
 
   // ---- Cameras
-  let stream = null, devices = [], devIndex = 0;
+  let stream = null;
 
   async function loadDevices() {
     const all = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput');
-    // Hide front-facing cameras (labels usually contain "front" or "user" once permission is granted)
-    devices = all.filter(d => !/front|user|selfie|facing front/i.test(d.label));
-    if (devices.length === 0) devices = all;
+    // Hide front-facing cameras where the label says so
+    let list = all.filter(d => !/front|user|selfie/i.test(d.label));
+    if (list.length === 0) list = all;
 
     const activeId = stream ? stream.getVideoTracks()[0].getSettings().deviceId : null;
     camSel.innerHTML = '';
-    devices.forEach((d, i) => {
+    list.forEach((d, i) => {
       const o = document.createElement('option');
       o.value = d.deviceId;
       o.textContent = d.label || `Camera ${i + 1}`;
       camSel.appendChild(o);
     });
-    devIndex = Math.max(0, devices.findIndex(d => d.deviceId === activeId));
-    camSel.value = devices[devIndex]?.deviceId ?? '';
-    $('switch').textContent = `Next camera (${devices.length})`;
+    if (activeId) camSel.value = activeId;
   }
 
   async function startCamera(deviceId) {
     if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = null;
     const video = deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'environment' };
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video });
       cam.srcObject = stream;
-      await loadDevices();
     } catch (err) {
-      alert('Camera error: ' + err);
+      // Fall back to the default rear camera if the chosen lens won't start
+      if (deviceId) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          cam.srcObject = stream;
+        } catch (e2) {
+          alert('Camera error: ' + e2);
+        }
+      } else {
+        alert('Camera error: ' + err);
+      }
     }
+    await loadDevices();
   }
 
   camSel.onchange = () => startCamera(camSel.value);
-  $('switch').onclick = () => {
-    if (devices.length < 2) return;
-    devIndex = (devIndex + 1) % devices.length;
-    startCamera(devices[devIndex].deviceId);
-  };
   startCamera(null);
 
   // ---- Load photo

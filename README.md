@@ -14,6 +14,7 @@ No libraries, no build step, no install. It's a single HTML file.
 - **Drag to move**, **pinch or scroll to zoom**, and **twist or shift-drag to rotate** the photo
 - **Opacity slider** to balance the photo against what's under it
 - **Reset** to return the photo to its starting position, scale, and rotation
+- **Fullscreen button** to hide the browser's toolbars where the browser allows it
 - **Collapsible control panel** so you can clear the view
 
 ## Usage
@@ -21,7 +22,8 @@ No libraries, no build step, no install. It's a single HTML file.
 1. Open the page and allow camera access.
 2. Tap **Choose file** and select a photo.
 3. Adjust the photo with gestures and the opacity slider until it lines up with your paper.
-4. Tap **Hide** to tuck away the controls. Tap the round **▴** button to bring them back.
+4. Tap **Fullscreen** for a clearer view. Tap it again, or use your browser's back gesture, to exit.
+5. Tap **Hide** to tuck away the controls. Tap the round **▴** button to bring them back.
 
 ### Gestures
 

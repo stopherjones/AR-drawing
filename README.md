@@ -4,6 +4,10 @@ A simple browser-based tracing aid. It shows your camera feed full screen and pl
 
 **Live demo:** https://stopherjones.github.io/AR-drawing/
 
+<img src="images/screenshot.png" alt="Screenshot of the AR Tracing Overlay" width="300">
+
+![Screenshot of the AR Tracing Overlay showing a bird photo over a sketchbook](screenshot.jpg)
+
 No libraries, no build step, no install. It's a single HTML file.
 
 ## Features

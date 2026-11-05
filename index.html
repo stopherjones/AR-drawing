@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <style>
   :root { --accent:#7dd3fc; --panel:rgba(15,18,25,0.82); --line:rgba(255,255,255,0.12); }
@@ -49,7 +50,7 @@
 <div id="ui">
   <div class="panel-head">
     <span>Tracing overlay</span>
-    <button id="hideBtn">Hide ▾</button>
+    <button id="hideBtn">Hide &#9662;</button>
   </div>
   <div class="panel-body">
     <div class="row">
@@ -64,10 +65,11 @@
     </label>
     <div class="row">
       <button id="reset" class="btn primary">Reset photo</button>
+      <button id="fs" class="btn">Fullscreen</button>
     </div>
   </div>
 </div>
-<button id="toggle" title="Show controls">▴</button>
+<button id="toggle" title="Show controls">&#9652;</button>
 
 <script>
   const $ = id => document.getElementById(id);
@@ -81,6 +83,22 @@
   };
   $('hideBtn').onclick = () => setPanel(false);
   toggle.onclick = () => setPanel(true);
+
+  // ---- Fullscreen (must be triggered by a tap)
+  const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const updateFsLabel = () => { $('fs').textContent = fsEl() ? 'Exit fullscreen' : 'Fullscreen'; };
+  $('fs').onclick = () => {
+    if (!fsEl()) {
+      const el = document.documentElement;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) req.call(el).catch(() => {});
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document).catch(() => {});
+    }
+  };
+  document.addEventListener('fullscreenchange', updateFsLabel);
+  document.addEventListener('webkitfullscreenchange', updateFsLabel);
 
   // ---- Photo transform (only the photo is transformed; the camera never is)
   let x = 0, y = 0, scale = 1, angle = 0;

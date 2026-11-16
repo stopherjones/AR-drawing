@@ -41,6 +41,8 @@
   input[type=range] { width:100%; accent-color:var(--accent); }
   input[type=file] { color:#c9d1dc; font-size:13px; }
   #hideBtn { background:none; border:none; color:#9aa4b2; font-size:13px; cursor:pointer; padding:0; }
+  .about { margin:0; font-size:12px; text-align:center; color:#9aa4b2; }
+  .about a { color:var(--accent); }
 </style>
 </head>
 <body>
@@ -65,7 +67,7 @@
       <input type="range" id="op" min="0" max="1" step="0.05" value="0.5">
     </label>
     <div class="row">
-      <button id="reset" class="btn primary">Reset photo</button>
+      <p class="about">Open-source personal web project built by me, Chris Jones (stopherjones). For more information, see <a href="https://stopherjones.github.io/about.html">About Me</a></p>
     </div>
   </div>
 </div>
@@ -150,10 +152,6 @@
   };
 
   op.oninput = () => pic.style.opacity = op.value;
-  $('reset').onclick = () => {
-    x = y = angle = 0; scale = 1; render();
-    op.value = 0.5; pic.style.opacity = 0.5;
-  };
 
   // ---- Gestures on the stage only
   // Touch: one finger drags, two fingers pinch and twist.
